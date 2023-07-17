@@ -5,14 +5,14 @@ from dataclasses import asdict
 
 from loguru import logger
 
+from robocorp.tasks import task
+
 from src.ScrappingNews.config import get_environment_variables
 from src.ScrappingNews.services.csv import CsvParser
 from src.ScrappingNews.services.ny_times import NYTimesScrapperService
 
-
-
-
-if __name__ == "__main__":
+@task
+def task():
     config = get_environment_variables()
     logger = logger
     logger.add("logs/logs.log", retention="5 days")
@@ -20,3 +20,7 @@ if __name__ == "__main__":
     robot = NYTimesScrapperService(config, logger)
     articles = robot.release_the_spider()
     CsvParser(logger).save_to_excel(articles)
+
+
+if __name__ == "__main__":
+    task()
